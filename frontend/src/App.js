@@ -1,52 +1,30 @@
-import React, { useEffect, useState } from 'react';
+// App.js
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import './App.css';
-
-// 로그인 페이지 가져오기
-import LoginPage from './LoginPage';
 import SellerPage from './SellerPage';
+import LoginPage from './LoginPage';
 import ProductDetail from './ProductDetail';
-import CartPage from './CartPage';
+
 function App() {
-  // --- [백엔드 연결 테스트] ---
-  const [serverMessage, setServerMessage] = useState<string>("");
-
-  useEffect(() => {
-    fetch("http://localhost:8080/api/hello") // 백엔드에 인사 건네기
-      .then((res) => res.text())
-      .then((data) => {
-          console.log("서버 응답:", data);
-          setServerMessage(data); // 응답받은 메시지 저장
-      })
-      .catch((err) => console.error("서버 연결 실패:", err));
-  }, []);
-  // -------------------------
-
   return (
     <Router>
       <div className="app">
+
         <header className="header">
           <div className="logo">N Pay</div>
           <nav className="nav">
             <Link to="/">메인</Link>
             <Link to="/seller">판매자센터</Link>
-            <Link to="/cart">장바구니</Link>
             <Link to="/login">로그인</Link>
           </nav>
         </header>
 
-        {/* 서버 연결 잘 됐는지 확인하는 작은 박스 (테스트용) */}
-        <div style={{ textAlign: 'center', background: '#f0f0f0', padding: '5px', fontSize: '12px' }}>
-             📡 서버 상태: {serverMessage || "연결 시도 중..."}
-        </div>
-
         <Routes>
           <Route path="/" element={<MainPage />} />
+          <Route path="/seller" element={<SellerPage />} />
           <Route path="/login" element={<LoginPage />} />
-          {/* 아직 없는 페이지는 주석 처리 */}
-          {<Route path="/seller" element={<SellerPage />} />}
-          {<Route path="/product/:id" element={<ProductDetail />} />}
-          <Route path="/cart" element={<CartPage />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
         </Routes>
 
         <footer className="footer">
@@ -57,7 +35,7 @@ function App() {
   );
 }
 
-// 메인 페이지 화면 (상품 목록)
+// 메인 페이지 UI 분리
 function MainPage() {
   const products = [
     { id: 1, name: '스칸디무드 옷장', price: 79900, img: "https://via.placeholder.com/300" },
@@ -79,11 +57,10 @@ function MainPage() {
         <h3>인기 상품</h3>
         <div className="product-list">
           {products.map(p => (
-            // 아직 상세 페이지가 없으니 클릭해도 이동 안 하게 막아둠
             <Link key={p.id} to={`/product/${p.id}`} className="product-card">
-                <img src={p.img} alt={p.name} />
-                <p className="product-name">{p.name}</p>
-                <p className="product-price">{p.price.toLocaleString()}원</p>
+              <img src={p.img} alt={p.name} />
+              <p className="product-name">{p.name}</p>
+              <p className="product-price">{p.price.toLocaleString()}원</p>
             </Link>
           ))}
         </div>

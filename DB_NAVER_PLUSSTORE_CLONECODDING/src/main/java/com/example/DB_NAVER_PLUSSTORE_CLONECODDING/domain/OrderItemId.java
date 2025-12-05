@@ -1,5 +1,6 @@
 package com.example.DB_NAVER_PLUSSTORE_CLONECODDING.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import java.io.Serializable;
 public class OrderItemId implements Serializable {
 
     private Long orderId;
+    @Column(name = "line_no")
     private Integer lineNo;
 
     public OrderItemId(Long orderId, Integer lineNo) {

@@ -35,4 +35,18 @@ public class Order {
     public enum OrderStatus {
         PENDING, PAID, SHIPPED, CANCELLED, REFUNDED
     }
+
+    public static Order createOrder(Customer customer) {
+        Order order = new Order();
+        order.customer = customer;
+        order.orderedAt = LocalDateTime.now(); // 현재 시간
+        order.status = OrderStatus.PENDING;    // 대기 상태
+        order.totalAmount = BigDecimal.ZERO;   // 일단 0원 (나중에 더함)
+        return order;
+    }
+
+    // [추가] 총 주문 금액 업데이트
+    public void calculateTotalAmount(BigDecimal amount) {
+        this.totalAmount = amount;
+    }
 }

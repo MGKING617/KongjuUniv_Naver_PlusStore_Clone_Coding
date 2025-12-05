@@ -37,4 +37,13 @@ public class ProductOption {
     public enum OptionStatus {
         ACTIVE, DISABLED
     }
+
+    //재고 감소
+    public void removeStock(int quantity) {
+        int restStock = this.stock - quantity;
+        if (restStock < 0) {
+            throw new IllegalStateException("재고가 부족합니다. (남은 수량: " + this.stock + ")");
+        }
+        this.stock = restStock;
+    }
 }

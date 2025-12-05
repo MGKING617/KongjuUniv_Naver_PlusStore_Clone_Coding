@@ -38,4 +38,23 @@ public class OrderItem {
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal subtotal;
+
+    public OrderItem(Order order, ProductOption option, int quantity, int lineNo) {
+        this.id = new OrderItemId(order.getId(), lineNo);
+        this.order = order;
+        this.option = option;
+        this.quantity = quantity;
+
+
+        // 기본가(Product 가격)
+        this.unitPriceSnapshot = option.getProduct().getPrice();
+        // 추가금(Option 가격)
+        this.extraPriceSnapshot = option.getExtraPrice();
+        // 할인(일단 0원 처리)
+        this.discountSnapshot = BigDecimal.ZERO;
+
+        // 합계 = (기본가 + 추가금) * 수량
+        BigDecimal pricePerItem = unitPriceSnapshot.add(extraPriceSnapshot);
+        this.subtotal = pricePerItem.multiply(BigDecimal.valueOf(quantity));
+    }
 }

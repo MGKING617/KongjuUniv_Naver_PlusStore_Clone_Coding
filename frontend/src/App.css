@@ -1,42 +1,248 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* 전체 영역 */
+.app {
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #111;
+  background-color: #fff;
+}
+
+/* 헤더 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  background: #fff;
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  font-size: 20px;
+  font-weight: bold;
+  color: #03c75a; /* 네이버 초록 */
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.nav a {
+  margin-left: 24px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.nav a:hover {
+  color: #03c75a;
 }
 
-.card {
-  padding: 2em;
+/* 메인 배너 */
+.main-banner {
+  height: 240px;
+  background: linear-gradient(120deg, #03c75a, #1ec800);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
 }
 
-.read-the-docs {
-  color: #888;
+.banner-content h2 {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.banner-content p {
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.join-btn {
+  background: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #03c75a;
+}
+.join-btn:hover {
+  background: #f2f2f2;
+}
+
+/* 혜택 섹션 */
+.benefit {
+  padding: 40px 20px;
+  text-align: center;
+}
+.benefit h3 {
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+.benefit-list {
+  list-style: none;
+  padding: 0;
+}
+.benefit-list li {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+/* 상품 섹션 */
+.product-section {
+  padding: 40px 20px;
+}
+.product-section h3 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.product-list {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.product-card {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  background: #fff;
+  transition: box-shadow 0.2s;
+}
+.product-card:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.product-card img {
+  width: 100%;
+  border-radius: 8px;
+}
+.product-name {
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 500;
+}
+.product-price {
+  margin-top: 4px;
+  color: #03c75a;
+  font-weight: bold;
+}
+
+/* 이벤트 배너 */
+.event-banner {
+  background: #111;
+  color: #fff;
+  text-align: center;
+  padding: 16px;
+  font-size: 16px;
+  margin-top: 40px;
+}
+
+/* 푸터 */
+.footer {
+  text-align: center;
+  padding: 24px 0;
+  border-top: 1px solid #eee;
+  color: #777;
+  font-size: 14px;
+  margin-top: 40px;
+}
+
+/* 판매자 페이지 */
+.seller-page {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.seller-info {
+  border: 1px solid #eee;
+  padding: 20px;
+  border-radius: 10px;
+  background: #fafafa;
+  margin-bottom: 30px;
+}
+
+.product-list.seller {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.add-btn {
+  margin-top: 20px;
+  background: #03c75a;
+  color: #fff;
+  padding: 12px 22px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.add-btn:hover {
+  background: #02b450;
+}
+
+/* 로그인 페이지 */
+.login-page {
+  max-width: 350px;
+  margin: 60px auto;
+  text-align: center;
+}
+.login-page input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+.login-page button {
+  width: 100%;
+  padding: 12px;
+  background: #03c75a;
+  border: none;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* 상품 상세 */
+.product-detail {
+  display: flex;
+  max-width: 1000px;
+  margin: 40px auto;
+  gap: 40px;
+}
+.detail-left img {
+  width: 400px;
+  border-radius: 10px;
+}
+.discount {
+  font-size: 22px;
+  color: #d0021b;
+  font-weight: bold;
+}
+.price {
+  font-size: 22px;
+  font-weight: bold;
+}
+.origin {
+  font-size: 14px;
+  text-decoration: line-through;
+  color: #bbb;
+  margin-left: 8px;
+}
+.option-area {
+  margin: 20px 0;
+}
+.buy-btn {
+  background: #03c75a;
+  padding: 14px;
+  border: none;
+  width: 100%;
+  color: #fff;
+  font-size: 18px;
+  border-radius: 10px;
+  cursor: pointer;
 }

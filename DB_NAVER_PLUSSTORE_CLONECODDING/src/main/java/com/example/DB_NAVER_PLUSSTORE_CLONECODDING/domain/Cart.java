@@ -25,4 +25,16 @@ public class Cart {
 
     @Column(nullable = false)
     private int quantity;
+
+    public Cart(Customer customer, ProductOption option, int quantity) {
+        this.id = new CartId(customer.getId(), option.getId()); // 복합키 생성
+        this.customer = customer;
+        this.option = option;
+        this.quantity = quantity;
+    }
+
+    // [추가] 수량 증가 메서드: 이미 담긴 상품을 또 담을 때 사용
+    public void addQuantity(int quantity) {
+        this.quantity += quantity;
+    }
 }
