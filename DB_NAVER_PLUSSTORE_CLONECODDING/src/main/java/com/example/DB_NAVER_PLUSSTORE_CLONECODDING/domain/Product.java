@@ -1,44 +1,27 @@
 package com.example.DB_NAVER_PLUSSTORE_CLONECODDING.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "Product")
-@Getter
-@NoArgsConstructor
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor @Builder
 public class Product {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")
-    private Long id;
+    private Long productId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seller_id", nullable = false)
+    @JoinColumn(name = "seller_id")
     private Seller seller;
 
-    @Column(nullable = false, length = 200)
     private String name;
-
-    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal price;
+    private Integer stock;
 
-    @Column(nullable = false)
-    private int stock;
-
-    @Column(name = "registered_at", nullable = false)
-    private LocalDateTime registeredAt;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ProductStatus status;
-
-    public enum ProductStatus {
-        ON, OFF, DELETED
-    }
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<ProductOption> options;
 }
