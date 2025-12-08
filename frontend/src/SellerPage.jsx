@@ -37,6 +37,25 @@ function SellerPage() {
         }
     }, [user, isLoading, navigate]);
 
+
+    const handleDeleteProduct = (productId) => {
+        if (window.confirm("정말로 이 상품을 삭제하시겠습니까?")) {
+            fetch(`http://localhost:8080/api/seller/products/${productId}`, {
+                method: 'DELETE',
+            })
+                .then(res => {
+                    if (res.ok) {
+                        alert("상품이 삭제되었습니다.");
+
+                        setMyProducts(myProducts.filter(p => p.productId !== productId));
+                    } else {
+                        alert("삭제 실패");
+                    }
+                })
+                .catch(err => console.error("삭제 에러:", err));
+        }
+    };
+
     const addOptionField = () => setOptions([...options, { optionName: '', extraPrice: 0, stock: 0 }]);
 
     const handleOptionChange = (index, field, value) => {
@@ -89,7 +108,7 @@ function SellerPage() {
 
     return (
         <div style={{ maxWidth: '800px', margin: '20px auto', padding:'20px' }}>
-            <h2> 판매자 센터 ({user.name}님)</h2>
+            <h2>📢 판매자 센터 ({user.name}님)</h2>
             <div style={{ padding: '25px', background: '#f8f9fa', borderRadius: '10px', border:'1px solid #ddd' }}>
 
 
@@ -120,13 +139,12 @@ function SellerPage() {
                     <input type="file" onChange={e => setImageFile(e.target.files[0])} style={inputStyle} accept="image/*" />
                 </div>
 
-
+                {/* 3. 옵션 관리 */}
                 <div style={{marginTop:'30px', padding:'15px', background:'white', borderRadius:'8px', border:'1px solid #ccc'}}>
                     <div style={{display:'flex', justifyContent:'space-between', marginBottom:'10px'}}>
                         <label style={{fontWeight:'bold', color:'#03c75a'}}>옵션 구성</label>
                         <button onClick={addOptionField} style={{background:'#03c75a', color:'white', border:'none', padding:'5px 10px', borderRadius:'4px', cursor:'pointer'}}>+ 옵션 추가</button>
                     </div>
-
 
                     <div style={{display:'flex', gap:'5px', marginBottom:'5px', padding:'0 10px', fontSize:'13px', fontWeight:'bold', color:'#555'}}>
                         <div style={{flex:2}}>옵션 이름 (예: 빨강, XL)</div>
@@ -137,29 +155,9 @@ function SellerPage() {
 
                     {options.map((opt, idx) => (
                         <div key={idx} style={{display:'flex', gap:'5px', marginBottom:'10px'}}>
-
-                            <input
-                                placeholder="옵션명"
-                                value={opt.optionName}
-                                onChange={e => handleOptionChange(idx, 'optionName', e.target.value)}
-                                style={{flex:2, padding:'8px', border:'1px solid #ddd', borderRadius:'4px'}}
-                            />
-
-                            <input
-                                placeholder="추가금(원)"
-                                type="number"
-                                value={opt.extraPrice}
-                                onChange={e => handleOptionChange(idx, 'extraPrice', e.target.value)}
-                                style={{flex:1, padding:'8px', border:'1px solid #ddd', borderRadius:'4px'}}
-                            />
-
-                            <input
-                                placeholder="수량(개)"
-                                type="number"
-                                value={opt.stock}
-                                onChange={e => handleOptionChange(idx, 'stock', e.target.value)}
-                                style={{flex:1, padding:'8px', border:'1px solid #ddd', borderRadius:'4px'}}
-                            />
+                            <input placeholder="옵션명" value={opt.optionName} onChange={e => handleOptionChange(idx, 'optionName', e.target.value)} style={{flex:2, padding:'8px', border:'1px solid #ddd', borderRadius:'4px'}} />
+                            <input placeholder="추가금(원)" type="number" value={opt.extraPrice} onChange={e => handleOptionChange(idx, 'extraPrice', e.target.value)} style={{flex:1, padding:'8px', border:'1px solid #ddd', borderRadius:'4px'}} />
+                            <input placeholder="수량(개)" type="number" value={opt.stock} onChange={e => handleOptionChange(idx, 'stock', e.target.value)} style={{flex:1, padding:'8px', border:'1px solid #ddd', borderRadius:'4px'}} />
                             <button onClick={() => removeOption(idx)} style={{background:'#ff4d4f', color:'white', border:'none', borderRadius:'4px', cursor:'pointer', padding:'0 10px'}}>X</button>
                         </div>
                     ))}
@@ -171,9 +169,26 @@ function SellerPage() {
             <h3 style={{marginTop:'40px'}}>📦 등록된 상품</h3>
             <ul style={{listStyle:'none', padding:0}}>
                 {myProducts.map(p => (
-                    <li key={p.productId} style={{borderBottom:'1px solid #eee', padding:'10px', display:'flex', alignItems:'center', gap:'10px'}}>
-                        <img src={p.imageUrl || "https://via.placeholder.com/50"} style={{width:'50px', height:'50px', objectFit:'cover', borderRadius:'4px'}} />
-                        <span>[{p.category?.categoryName}] <b>{p.name}</b> ({p.price.toLocaleString()}원)</span>
+                    <li key={p.productId} style={{borderBottom:'1px solid #eee', padding:'15px 0', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                        <div style={{display:'flex', alignItems:'center', gap:'15px'}}>
+                            <img src={p.imageUrl || "https://via.placeholder.com/50"} style={{width:'50px', height:'50px', objectFit:'cover', borderRadius:'4px'}} />
+                            <div>
+                                <span style={{fontSize:'12px', color:'#03c75a', border:'1px solid #03c75a', padding:'2px 6px', borderRadius:'10px', marginRight:'8px'}}>
+                                    {p.category ? p.category.categoryName : '미지정'}
+                                </span>
+                                <strong>{p.name}</strong>
+                            </div>
+                        </div>
+                        <div style={{display:'flex', alignItems:'center', gap:'20px'}}>
+                            <span style={{fontWeight:'bold'}}>{p.price.toLocaleString()}원</span>
+                            {/* 🟢 삭제 버튼 추가 */}
+                            <button
+                                onClick={() => handleDeleteProduct(p.productId)}
+                                style={{background:'#ff4d4f', color:'white', border:'none', padding:'8px 12px', borderRadius:'4px', cursor:'pointer', fontWeight:'bold'}}
+                            >
+                                삭제
+                            </button>
+                        </div>
                     </li>
                 ))}
             </ul>

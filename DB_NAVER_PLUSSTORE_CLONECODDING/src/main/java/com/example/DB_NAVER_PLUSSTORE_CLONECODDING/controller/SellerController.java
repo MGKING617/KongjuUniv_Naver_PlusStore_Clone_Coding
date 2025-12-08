@@ -27,18 +27,17 @@ public class SellerController {
     private final CategoryRepository categoryRepository;
     private final SellerRepository sellerRepository;
 
+
     @GetMapping("/sellers")
     public List<Seller> getAllSellers() {
-        List<Seller> sellers = sellerService.getAllSellers();
-        System.out.println(">>> [API] 스토어 목록 조회 요청됨. 조회된 스토어 수: " + sellers.size());
-        return sellers;
+        return sellerService.getAllSellers();
     }
+
 
     @GetMapping("/sellers/{sellerId}")
     public ResponseEntity<Seller> getSellerInfo(@PathVariable Long sellerId) {
         return ResponseEntity.of(sellerRepository.findById(sellerId));
     }
-
 
     @PostMapping("/seller/products")
     public ResponseEntity<String> createProduct(
@@ -77,12 +76,14 @@ public class SellerController {
         return ResponseEntity.ok("가입 성공");
     }
 
+
     @PostMapping("/sellers/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
         Seller seller = sellerService.login(body.get("loginId"), body.get("password"));
         if (seller != null) return ResponseEntity.ok(seller);
         return ResponseEntity.status(401).body("로그인 실패");
     }
+
 
     @PostMapping("/seller/categories")
     public ResponseEntity<String> createCategory(@RequestBody Map<String, Object> body) {
@@ -94,13 +95,22 @@ public class SellerController {
         return ResponseEntity.ok("카테고리 생성 완료");
     }
 
+
     @GetMapping("/seller/categories/{sellerId}")
     public List<Category> getSellerCategories(@PathVariable Long sellerId) {
         return categoryRepository.findBySeller_SellerId(sellerId);
     }
 
+
     @GetMapping("/seller/products/{sellerId}")
     public List<Product> getMyProducts(@PathVariable Long sellerId) {
         return productRepository.findBySeller_SellerId(sellerId);
+    }
+
+
+    @DeleteMapping("/seller/products/{productId}")
+    public ResponseEntity<String> deleteProduct(@PathVariable Long productId) {
+        productRepository.deleteById(productId);
+        return ResponseEntity.ok("상품 삭제 완료");
     }
 }

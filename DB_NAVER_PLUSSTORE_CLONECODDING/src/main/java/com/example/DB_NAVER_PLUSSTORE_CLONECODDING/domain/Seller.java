@@ -35,6 +35,10 @@ public class Seller {
     @Builder.Default
     private SellerStatus status = SellerStatus.ACTIVE;
 
+    @Column(name = "warning_count", nullable = false)
+    @Builder.Default
+    private Integer warningCount = 0;
+
     @Column(name = "created_at", nullable = false)
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
