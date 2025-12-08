@@ -13,8 +13,6 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    // 주문하기
-    // POST http://localhost:8080/api/shop/order
     @PostMapping("")
     public Long placeOrder(@RequestBody OrderDto.CreateRequest request) {
         return orderService.createOrder(request.getCustomerId());

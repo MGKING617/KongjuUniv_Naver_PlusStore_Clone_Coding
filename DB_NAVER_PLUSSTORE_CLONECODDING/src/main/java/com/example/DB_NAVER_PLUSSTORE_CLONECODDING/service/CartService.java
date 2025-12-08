@@ -1,63 +1,79 @@
 package com.example.DB_NAVER_PLUSSTORE_CLONECODDING.service;
 
 import com.example.DB_NAVER_PLUSSTORE_CLONECODDING.domain.*;
-import com.example.DB_NAVER_PLUSSTORE_CLONECODDING.dto.CartDto;
 import com.example.DB_NAVER_PLUSSTORE_CLONECODDING.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CartService {
+    private final CartItemRepository cartItemRepository;
+    private final ProductOptionRepository productOptionRepository;
 
-    private final CartRepository cartRepository;
-    private final CustomerRepository customerRepository;
-    private final ProductOptionRepository optionRepository;
+    @Transactional
+    public void addToCart(Map<String, Object> body) {
+        try {
+            // 1. 데이터 파싱 (로그 추가)
+            System.out.println(">>> [장바구니 요청 데이터]: " + body);
 
-    // [1] 장바구니 담기
-    public void addToCart(CartDto.AddRequest req) {
-        Customer customer = customerRepository.findById(req.getCustomerId())
-                .orElseThrow(() -> new IllegalArgumentException("고객 없음"));
-        ProductOption option = optionRepository.findById(req.getOptionId())
-                .orElseThrow(() -> new IllegalArgumentException("옵션 없음"));
+            // 숫자가 String으로 올 수도 있고 Integer로 올 수도 있어서 안전하게 변환
+            Long customerId = Long.valueOf(String.valueOf(body.get("customerId")));
+            Long optionId = Long.valueOf(String.valueOf(body.get("optionId")));
+            Integer quantity = Integer.valueOf(String.valueOf(body.get("quantity")));
 
-        // 복합키 생성 (getCustomerId, getOptionId 사용)
-        CartId cartId = new CartId(customer.getCustomerId(), option.getOptionId());
+            // 2. 복합키 생성
+            CartItemId id = new CartItemId(customerId, optionId);
 
-        Cart cart = cartRepository.findById(cartId).orElse(null);
+            // 3. DB 조회 및 저장
+            Optional<CartItem> existingItem = cartItemRepository.findById(id);
 
-        if (cart != null) {
-            // 이미 있으면 수량 추가
-            cart.addQuantity(req.getQuantity());
-        } else {
-            // 없으면 새로 생성 (Builder 사용)
-            cart = Cart.builder()
-                    .customerId(customer.getCustomerId())
-                    .optionId(option.getOptionId())
-                    .option(option)
-                    .quantity(req.getQuantity())
-                    .build();
-            cartRepository.save(cart);
+            if (existingItem.isPresent()) {
+                CartItem item = existingItem.get();
+                item.setQuantity(item.getQuantity() + quantity);
+                cartItemRepository.save(item);
+                System.out.println(">>> [장바구니] 수량 증가 완료: " + item.getQuantity());
+            } else {
+                CartItem cartItem = CartItem.builder()
+                        .customerId(customerId)
+                        .optionId(optionId)
+                        .quantity(quantity)
+                        .build();
+                cartItemRepository.save(cartItem);
+                System.out.println(">>> [장바구니] 신규 상품 담기 완료");
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // 에러 발생 시 로그 출력
+            throw new RuntimeException("장바구니 담기 중 오류 발생");
         }
     }
 
-    // [2] 장바구니 목록 조회
-    public List<CartDto.Response> getCartList(Long customerId) {
-        return cartRepository.findByCustomerId(customerId).stream().map(cart -> {
-            ProductOption option = cart.getOption();
-            CartDto.Response res = new CartDto.Response();
-            res.setOptionId(option.getOptionId());
-            res.setProductName(option.getProduct().getName());
-            res.setOptionName(option.getOptionName());
-            res.setQuantity(cart.getQuantity());
-            // 가격 계산 (기본가 + 옵션가)
-            res.setPrice(option.getProduct().getPrice().add(option.getExtraPrice()));
-            return res;
-        }).collect(Collectors.toList());
+    public List<Map<String, Object>> getCartList(Long customerId) {
+        List<CartItem> items = cartItemRepository.findByCustomerId(customerId);
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (CartItem item : items) {
+            ProductOption option = productOptionRepository.findById(item.getOptionId()).orElse(null);
+            if (option == null) continue;
+
+            BigDecimal basePrice = option.getProduct().getPrice();
+            BigDecimal extraPrice = option.getExtraPrice();
+            BigDecimal unitPrice = basePrice.add(extraPrice);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("productName", option.getProduct().getName());
+            map.put("optionName", option.getOptionName());
+            map.put("price", unitPrice);
+            map.put("quantity", item.getQuantity());
+            // 프론트엔드에서 이미지를 보여주기 위해 추가
+            map.put("imageUrl", option.getProduct().getImageUrl());
+
+            result.add(map);
+        }
+        return result;
     }
 }

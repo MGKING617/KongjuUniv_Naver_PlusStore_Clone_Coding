@@ -6,7 +6,8 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CartId implements Serializable {
+@EqualsAndHashCode
+public class CartItemId implements Serializable {
     private Long customerId;
     private Long optionId;
 }
