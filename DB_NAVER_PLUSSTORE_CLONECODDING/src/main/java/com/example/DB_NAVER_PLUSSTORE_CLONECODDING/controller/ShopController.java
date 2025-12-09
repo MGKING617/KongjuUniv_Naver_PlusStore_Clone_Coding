@@ -23,9 +23,20 @@ public class ShopController {
         return ResponseEntity.ok("장바구니에 담겼습니다.");
     }
 
+
     @GetMapping("/cart/{customerId}")
     public ResponseEntity<List<Map<String, Object>>> getCart(@PathVariable Long customerId) {
         List<Map<String, Object>> list = cartService.getCartList(customerId);
         return ResponseEntity.ok(list);
+    }
+
+
+    @DeleteMapping("/cart/{customerId}/{optionId}")
+    public ResponseEntity<String> deleteCartItem(
+            @PathVariable Long customerId,
+            @PathVariable Long optionId
+    ) {
+        cartService.removeCartItem(customerId, optionId);
+        return ResponseEntity.ok("삭제되었습니다.");
     }
 }

@@ -47,7 +47,7 @@ function MainPage() {
                                     {seller.storeName || "이름 없는 스토어"}
                                 </p>
                                 <button style={{padding:'8px 25px', background:'#03c75a', color:'white', border:'none', borderRadius:'20px', cursor:'pointer', fontWeight:'bold', fontSize:'14px'}}>
-                                    구경가기
+                                    상점 입장
                                 </button>
                             </Link>
                         ))}

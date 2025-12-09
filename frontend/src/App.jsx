@@ -29,7 +29,7 @@ function AppContent() {
         <div className="app">
             <header className="header">
                 <Link to="/" className="logo" style={{textDecoration:'none', color:'#03c75a', fontWeight:'bold', fontSize:'24px'}}>
-                    N Plus Store
+                    N PlusStore
                 </Link>
                 <nav className="nav">
                     {user && user.role === 'SELLER' && (

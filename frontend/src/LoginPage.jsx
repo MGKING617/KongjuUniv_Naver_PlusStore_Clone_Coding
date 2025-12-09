@@ -50,7 +50,7 @@ function LoginPage() {
 
     return (
         <div className="login-page">
-            <h2 style={{color: '#03c75a'}}>N Pay 로그인</h2>
+            <h2 style={{color: '#03c75a'}}>N PlusStore 로그인</h2>
 
             <div style={{display:'flex', marginBottom:'20px', border:'1px solid #ddd', borderRadius:'6px'}}>
                 <button
